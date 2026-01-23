@@ -98,15 +98,14 @@ export default function LandingPage() {
             <span className="text-2xl font-black tracking-tight text-slate-900 font-inter">Study<span className="text-indigo-600">X</span></span>
           </div>
 
-          <div className="hidden lg:flex items-center gap-10">
+          {/* <div className="hidden lg:flex items-center gap-10">
             <a href="#features" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Features</a>
             <a href="#subjects" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Subjects</a>
             <a href="#pricing" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Pricing</a>
             <a href="#faq" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">FAQ</a>
-          </div>
+          </div> */}
 
           <div className="flex items-center gap-4">
-            <button className="hidden sm:block text-sm font-bold text-slate-600 hover:text-slate-900 transition-colors">Sign In</button>
             <Link
               href="/ai"
               className="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100"
