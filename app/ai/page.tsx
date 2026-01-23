@@ -136,14 +136,9 @@ export default function Home() {
     }
   }, [allMessages]);
 
-  // Auto-scroll to bottom
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [allMessages, isTyping]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Math Rendering Effect
+  // Math Rendering & Auto-scroll Effect
   useEffect(() => {
     if (chatContainerRef.current) {
       try {
@@ -160,6 +155,13 @@ export default function Home() {
         console.error("Math rendering error:", e);
       }
     }
+
+    // Scroll to bottom after potential layout shifts
+    const timer = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    }, 100);
+
+    return () => clearTimeout(timer);
   }, [allMessages, isTyping, selectedSubject]);
 
   const currentSubjectMessages = useMemo(() => {
@@ -542,6 +544,8 @@ export default function Home() {
                     </div>
                   </div>
                 )}
+                {/* Scroll Anchor */}
+                <div ref={messagesEndRef} className="h-0 w-full" />
               </div>
             )}
           </div>
