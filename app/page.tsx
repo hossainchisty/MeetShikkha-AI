@@ -166,38 +166,38 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* Right Side Chat Preview (White Styled) */}
+          {/* Right Side Chat Preview (Dark Styled for Contrast) */}
           <div className="relative animate-in fade-in zoom-in-95 duration-1000 delay-200 hidden lg:block">
-            <div className="bg-white border border-slate-100 rounded-[40px] p-10 shadow-[0_32px_100px_-20px_rgba(0,0,0,0.08)] relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full" />
+            <div className="bg-[#1a1625] border border-white/5 rounded-[40px] p-10 shadow-[0_32px_100px_-20px_rgba(0,0,0,0.3)] relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full" />
 
-              <div className="flex items-center gap-2 mb-8 border-b border-slate-50 pb-4">
-                <span className="text-slate-400 font-bold text-lg">প্রশ্ন - উত্তর</span>
+              <div className="flex items-center gap-2 mb-8 border-b border-white/5 pb-4">
+                <span className="text-slate-200 font-bold text-lg">প্রশ্ন - উত্তর</span>
               </div>
 
               <div className="space-y-8">
                 {/* User Message */}
                 <div className="flex justify-end">
-                  <div className="bg-slate-50 border border-slate-100 p-5 rounded-3xl rounded-tr-none max-w-[80%]">
-                    <p className="text-slate-700 font-bold mb-1 font-inter">X^2 - 9 = 0</p>
-                    <p className="text-slate-500 text-sm font-medium">এই অংকটার সমাধান করে দিন</p>
+                  <div className="bg-white/5 border border-white/10 p-5 rounded-3xl rounded-tr-none max-w-[80%]">
+                    <p className="text-white font-bold mb-1 font-inter">X^2 - 9 = 0</p>
+                    <p className="text-slate-400 text-sm font-medium">এই অংকটার সমাধান করে দিন</p>
                   </div>
                 </div>
 
                 {/* AI Response */}
                 <div className="flex gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 mt-1 shadow-lg shadow-indigo-100">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 mt-1 shadow-lg shadow-indigo-900/20">
                     <Sparkles size={20} />
                   </div>
                   <div className="space-y-4 flex-1">
-                    <div className="text-slate-700 font-medium leading-relaxed">
+                    <div className="text-slate-200 font-medium leading-relaxed">
                       <p className="mb-2">x² - 9 = 0 সমাধানের জন্য:</p>
                       <p className="mb-1">x² = 9</p>
                       <p className="mb-1">x = ±√9 = ±3</p>
-                      <p className="font-bold text-indigo-600">সুতরাং, x = 3 অথবা x = -3</p>
+                      <p className="font-bold text-indigo-400">সুতরাং, x = 3 অথবা x = -3</p>
                     </div>
-                    <div className="flex items-center gap-4 text-slate-300 pt-4">
-                      <Copy size={16} className="hover:text-indigo-400 cursor-pointer transition-colors" />
+                    <div className="flex items-center gap-4 text-slate-600 pt-4">
+                      <Copy size={16} className="hover:text-slate-300 cursor-pointer transition-colors" />
                       <ThumbsUp size={16} className="hover:text-indigo-400 cursor-pointer transition-colors" />
                       <ThumbsDown size={16} className="hover:text-indigo-400 cursor-pointer transition-colors" />
                     </div>
