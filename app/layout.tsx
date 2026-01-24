@@ -15,7 +15,7 @@ const hindSiliguri = Hind_Siliguri({
 });
 
 export const metadata: Metadata = {
-  title: "StudyX - AI Academic Assistant",
+  title: "MeetShikkha AI - শিক্ষার ভবিষ্যৎ, এবার তোমার হাতে",
   description: "A highly intelligent, empathetic, and professional AI Academic Chat Assistant.",
 };
 

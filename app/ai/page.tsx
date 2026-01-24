@@ -423,7 +423,7 @@ export default function Home() {
                 <div className="relative w-full flex justify-center mb-4 h-[120px]">
                   <img
                     src="/qna.webp"
-                    alt="StudyX Q&A Illustration"
+                    alt="MeetShikkha AI Q&A Illustration"
                     className="h-full object-contain animate-in fade-in zoom-in-95 duration-1000 z-10"
                   />
                 </div>

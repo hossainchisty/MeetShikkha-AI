@@ -1,4 +1,4 @@
-import { STUDYX_SYSTEM_PROMPT } from "@/lib/constants";
+import { MEETSHIKKHAI_SYSTEM_PROMPT } from "@/lib/constants";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         }
 
         const subjectContext = `\n\nCONTEXT: Subject: ${subject}.`;
-        const systemPrompt = STUDYX_SYSTEM_PROMPT + subjectContext;
+        const systemPrompt = MEETSHIKKHAI_SYSTEM_PROMPT + subjectContext;
 
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
                 "Authorization": `Bearer ${apiKey}`,
                 "Content-Type": "application/json",
                 "HTTP-Referer": process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-                "X-Title": "StudyX AI Academic Assistant"
+                "X-Title": "MeetShikkha AI"
             },
             body: JSON.stringify({
                 model: "google/gemini-2.5-flash-lite",
