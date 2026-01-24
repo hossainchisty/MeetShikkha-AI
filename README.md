@@ -1,6 +1,6 @@
-# StudyX - AI Academic Assistant
+# MeetShikkha AI - AI Academic Assistant
 
-StudyX is a powerful, empathetic AI-driven academic assistant designed to help students master Mathematics, Physics, Chemistry, Biology, and English.
+MeetShikkha AI is a powerful, empathetic AI-driven academic assistant designed to help students master Mathematics, Physics, Chemistry, Biology, and English.
 
 ## Features
 - **Intelligent AI**: Powered by **Qwen 2.5 7B** via OpenRouter for high-quality academic reasoning.
