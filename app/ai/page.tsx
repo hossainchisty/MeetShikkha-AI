@@ -300,7 +300,7 @@ export default function Home() {
               <div className={`w-8 h-8 rounded-lg ${theme.primary} flex items-center justify-center text-white shadow-sm transition-all duration-500`}>
                 <BrandIcon className="w-5 h-5" />
               </div>
-              <span className="font-extrabold text-xl tracking-tight text-[#111827]">Study<span className={`font-extrabold ${theme.text} transition-colors duration-500`}>X</span></span>
+              <span className="font-extrabold text-xl tracking-tight text-[#111827]">Meet<span className={`font-extrabold ${theme.text} transition-colors duration-500`}>Shikkha AI</span></span>
             </div>
           </div>
           <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-2 text-slate-400">

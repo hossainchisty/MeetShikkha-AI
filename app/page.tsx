@@ -95,7 +95,7 @@ export default function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
               <Sparkles className="w-6 h-6" />
             </div>
-            <span className="text-2xl font-black tracking-tight text-slate-900 font-inter">MeetShikkha<span className="text-indigo-600">AI</span></span>
+            <span className="text-2xl font-black tracking-tight text-slate-900 font-inter">Meet<span className="text-indigo-600">ShikkhaAI</span></span>
           </div>
 
           {/* <div className="hidden lg:flex items-center gap-10">
