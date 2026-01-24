@@ -430,7 +430,7 @@ export default function Home() {
 
                 <h2 className="text-[24px] md:text-[28px] font-black text-[#374151] mb-2 tracking-tight leading-tight text-center">প্রশ্ন করে ইনস্ট্যান্ট উত্তর দেখো</h2>
                 <p className="text-[#6B7280] max-w-[580px] text-center font-medium leading-relaxed px-4 text-[13px] mb-10">
-                  তোমার প্রশ্নটি যত স্পষ্ট ও সুনির্দিষ্ট করে লিখবে অথবা ছবিটি যত স্পষ্ট হবে, StudyX তত নির্ভুলভাবে প্রশ্নের উত্তর দিতে পারবে।
+                  তোমার প্রশ্নটি যত স্পষ্ট ও সুনির্দিষ্ট করে লিখবে অথবা ছবিটি যত স্পষ্ট হবে, MeetShikkha AI তত নির্ভুলভাবে প্রশ্নের উত্তর দিতে পারবে।
                 </p>
 
                 {/* Reference-Matched Input Card */}
@@ -499,7 +499,7 @@ export default function Home() {
                   {/* AI Disclaimer below usage bar */}
                   <div className="mt-8 text-center pb-4">
                     <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em] opacity-70 px-4">
-                      StudyX ভুল করতে পারে। তথ্য যাচাই করো।
+                      MeetShikkha AI ভুল করতে পারে। তথ্য যাচাই করো।
                     </p>
                   </div>
                 </div>

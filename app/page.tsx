@@ -21,12 +21,12 @@ import { useState } from 'react';
 
 const FAQS = [
   {
-    question: "StudyX কি ভাবে সাহায্য করে?",
-    answer: "StudyX একটি অগ্রসর AI প্ল্যাটফর্ম যা গণিত, বিজ্ঞান এবং ইংরেজি সহ বিভিন্ন বিষয়ের জটিল সমস্যার সমাধান এবং ব্যাখ্যা প্রদান করে। এটি NCTB কারিকুলাম অনুসরণ করে এবং ধাপে ধাপে বুঝিয়ে দেয়।"
+    question: "MeetShikkha AI কি ভাবে সাহায্য করে?",
+    answer: "MeetShikkha AI একটি অগ্রসর AI প্ল্যাটফর্ম যা গণিত, বিজ্ঞান এবং ইংরেজি সহ বিভিন্ন বিষয়ের জটিল সমস্যার সমাধান এবং ব্যাখ্যা প্রদান করে। এটি NCTB কারিকুলাম অনুসরণ করে এবং ধাপে ধাপে বুঝিয়ে দেয়।"
   },
   {
     question: "এটি কি বাংলা ভাষা সাপোর্ট করে?",
-    answer: "হ্যাঁ! StudyX বাংলা এবং ইংরেজি উভয় ভাষাই সাবলীলভাবে বুঝতে পারে এবং উত্তর দিতে পারে।"
+    answer: "হ্যাঁ! MeetShikkha AI বাংলা এবং ইংরেজি উভয় ভাষাই সাবলীলভাবে বুঝতে পারে এবং উত্তর দিতে পারে।"
   },
   {
     question: "আমি কি আমার প্রশ্নের ছবি আপলোড করতে পারি?",
@@ -95,7 +95,7 @@ export default function LandingPage() {
             <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
               <Sparkles className="w-6 h-6" />
             </div>
-            <span className="text-2xl font-black tracking-tight text-slate-900 font-inter">Study<span className="text-indigo-600">X</span></span>
+            <span className="text-2xl font-black tracking-tight text-slate-900 font-inter">MeetShikkha<span className="text-indigo-600">AI</span></span>
           </div>
 
           {/* <div className="hidden lg:flex items-center gap-10">
@@ -127,7 +127,7 @@ export default function LandingPage() {
             </h1>
 
             <p className="text-lg md:text-xl text-slate-500 font-medium mb-10 max-w-xl leading-relaxed">
-              দেশের প্রথম সম্পূর্ণ বাংলায় AI; জাতীয় কারিকুলাম অনুযায়ী সকল প্রশ্নের ইনস্ট্যান্ট উত্তর। পড়াশোনাকে সহজ করতে StudyX সবসময় তোমার পাশে।
+              দেশের প্রথম সম্পূর্ণ বাংলায় AI; জাতীয় কারিকুলাম অনুযায়ী সকল প্রশ্নের ইনস্ট্যান্ট উত্তর। পড়াশোনাকে সহজ করতে MeetShikkha সবসময় তোমার পাশে।
             </p>
 
             <div className="flex flex-wrap items-center gap-5 mb-14">
@@ -316,7 +316,7 @@ export default function LandingPage() {
             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg">
               <Sparkles className="w-5 h-5" />
             </div>
-            <span className="text-xl font-black tracking-tight text-slate-900 font-inter">Study<span className="text-indigo-600">X</span></span>
+            <span className="text-xl font-black tracking-tight text-slate-900 font-inter">MeetShikkha<span className="text-indigo-600">AI</span></span>
           </div>
 
           <div className="flex gap-10 text-sm font-bold text-slate-400">
@@ -325,7 +325,7 @@ export default function LandingPage() {
             <a href="#" className="hover:text-indigo-600 transition-colors uppercase tracking-[0.2em]">Terms</a>
           </div>
 
-          <p className="text-sm font-bold text-slate-400 font-inter">© 2026 StudyX AI. All rights reserved.</p>
+          <p className="text-sm font-bold text-slate-400 font-inter">© 2026 MeetShikkha AI. All rights reserved.</p>
         </div>
       </footer>
     </div>
