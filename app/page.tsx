@@ -9,11 +9,13 @@ import {
   Copy,
   FlaskConical,
   Languages,
+  Menu,
   Microscope,
   PlayCircle,
   Sparkles,
   ThumbsDown,
   ThumbsUp,
+  X,
   Zap
 } from 'lucide-react';
 import Link from 'next/link';
@@ -78,6 +80,7 @@ const PRICING = [
 
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-600">
@@ -89,29 +92,78 @@ export default function LandingPage() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-              <Sparkles className="w-6 h-6" />
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-2xl border-b border-slate-100/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-20">
+            {/* Logo */}
+            <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-200">
+                <Sparkles className="w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
+              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-900 font-inter">
+                Meet<span className="text-indigo-600">ShikkhaAI</span>
+              </span>
             </div>
-            <span className="text-2xl font-black tracking-tight text-slate-900 font-inter">Meet<span className="text-indigo-600">ShikkhaAI</span></span>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8 lg:gap-10">
+              <a href="#subjects" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Subjects</a>
+              <a href="#pricing" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Pricing</a>
+              <a href="#faq" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">FAQ</a>
+              <Link
+                href="/ai"
+                className="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100"
+              >
+                লগ ইন / সাইন আপ
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <div className="md:hidden flex items-center gap-3">
+              <Link
+                href="/chat"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-full font-bold text-xs hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
+              >
+                লগ ইন
+              </Link>
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="p-2 rounded-xl bg-slate-50 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
+                aria-label="Toggle menu"
+              >
+                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            </div>
           </div>
+        </div>
 
-          {/* <div className="hidden lg:flex items-center gap-10">
-            <a href="#features" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Features</a>
-            <a href="#subjects" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Subjects</a>
-            <a href="#pricing" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Pricing</a>
-            <a href="#faq" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">FAQ</a>
-          </div> */}
-
-          <div className="flex items-center gap-4">
-            <Link
-              href="/ai"
-              className="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100"
+        {/* Mobile Navigation Menu */}
+        <div
+          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-white border-t border-slate-100 ${isMenuOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'
+            }`}
+        >
+          <div className="px-4 py-6 space-y-4">
+            <a
+              href="#subjects"
+              onClick={() => setIsMenuOpen(false)}
+              className="block px-4 py-2 text-base font-bold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
             >
-              লগ ইন / সাইন আপ
-            </Link>
+              Subjects
+            </a>
+            <a
+              href="#pricing"
+              onClick={() => setIsMenuOpen(false)}
+              className="block px-4 py-2 text-base font-bold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+            >
+              Pricing
+            </a>
+            <a
+              href="#faq"
+              onClick={() => setIsMenuOpen(false)}
+              className="block px-4 py-2 text-base font-bold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+            >
+              FAQ
+            </a>
           </div>
         </div>
       </nav>
