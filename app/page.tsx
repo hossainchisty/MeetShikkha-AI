@@ -117,41 +117,46 @@ export default function LandingPage() {
 
             <div className="hidden md:flex items-center gap-6 lg:gap-8">
               {/* Theme Toggle */}
-              <button
+              {/* <button
                 onClick={toggleTheme}
                 className="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all border border-slate-100 dark:border-slate-700 shadow-sm"
               >
                 {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-              </button>
+              </button> */}
 
               {/* Language Switcher */}
-              <button
+              {/* <button
                 onClick={() => setLanguage(language === 'bn' ? 'en' : 'bn')}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-slate-100 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all text-xs font-black uppercase tracking-wider"
               >
                 <Globe size={14} />
                 {language === 'bn' ? 'English' : 'বাংলা'}
-              </button>
+              </button> */}
 
               <div className="w-px h-6 bg-slate-200 dark:bg-slate-700" />
 
               <SignedOut>
                 <div className="flex items-center gap-4">
-                  <SignInButton mode="modal">
+                  {/* <SignInButton mode="modal">
                     <button className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-indigo-600 transition-colors">
                       {t.common.login}
                     </button>
-                  </SignInButton>
-                  <SignUpButton mode="modal">
+                  </SignInButton> */}
+                  {/* <SignUpButton mode="modal">
                     <button className="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100 dark:shadow-none">
                       {t.common.signup}
                     </button>
-                  </SignUpButton>
+                  </SignUpButton> */}
+                  <SignInButton mode="modal">
+                    <button className="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100 dark:shadow-none">
+                      {t.common.signup}
+                    </button>
+                  </SignInButton>
                 </div>
               </SignedOut>
               <SignedIn>
                 <div className="flex items-center gap-5">
-                  <Link href="/chat" className="text-sm font-bold text-slate-500 dark:text-slate-400 hover:text-indigo-600 transition-colors">
+                  <Link href="/chat" className="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100 dark:shadow-none">
                     {t.common.dashboard}
                   </Link>
                   <UserButton afterSignOutUrl="/" />
@@ -303,7 +308,7 @@ export default function LandingPage() {
             <a href="#" className="hover:text-indigo-600 transition-colors uppercase tracking-[0.2em]">{t.common.privacy}</a>
             <a href="#" className="hover:text-indigo-600 transition-colors uppercase tracking-[0.2em]">{t.common.terms}</a>
           </div>
-          <p className="text-sm font-bold text-slate-400 dark:text-slate-500 font-inter">© 2026 MeetShikkha AI. {t.common.rights}</p>
+          <p className="text-sm font-bold text-slate-400 dark:text-slate-500 font-inter">© {new Date().getFullYear()} MeetShikkha AI. {t.common.rights}</p>
         </div>
       </footer>
     </div>
