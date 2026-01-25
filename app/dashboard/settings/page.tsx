@@ -32,7 +32,7 @@ export default function SettingsPage() {
                     id: 'darkMode',
                     name: t.settings.darkMode,
                     icon: theme === 'dark' ? Sun : Moon,
-                    description: theme === 'dark' ? (language === 'bn' ? "চোখের আরামের জন্য লাইট থিম ব্যবহার করুন" : "Use light theme for eye comfort") : (language === 'bn' ? "চোখের আরামের জন্য ডার্ক থিম ব্যবহার করুন" : "Use dark theme for eye comfort"),
+                    description: theme === 'dark' ? t.profile.lightThemeDesc : t.profile.darkThemeDesc,
                     active: theme === 'dark',
                     onClick: toggleTheme
                 },
@@ -40,8 +40,8 @@ export default function SettingsPage() {
                     id: 'language',
                     name: t.settings.language,
                     icon: Globe,
-                    description: language === 'bn' ? "বাংলা বা ইংরেজি ভাষা সেট করুন" : "Set Bangla or English language",
-                    value: language === 'bn' ? 'বাংলা' : 'English',
+                    description: t.profile.languageSettingDesc,
+                    value: t.settings.languageName,
                     onClick: () => setLanguage(language === 'bn' ? 'en' : 'bn')
                 },
             ]
@@ -49,9 +49,9 @@ export default function SettingsPage() {
         {
             title: t.settings.security,
             items: [
-                { id: 'notifications', name: t.settings.notifications, icon: Bell, description: "নতুন আপডেট এবং খবরের বার্তা পান", active: true },
-                { id: 'privacy', name: t.settings.privacy, icon: Eye, description: "আপনার ডাটা কার সাথে শেয়ার করবেন তা নিয়ন্ত্রণ করুন" },
-                { id: 'security', name: t.settings.security, icon: Shield, description: "দ্বি-স্তর বিশিষ্ট নিরাপত্তা ব্যবস্থার সেটিংস" },
+                { id: 'notifications', name: t.settings.notifications, icon: Bell, description: t.profile.notificationsDesc, active: true },
+                { id: 'privacy', name: t.settings.privacy, icon: Eye, description: t.profile.privacyDesc },
+                { id: 'security', name: t.settings.security, icon: Shield, description: t.profile.securityDesc },
             ]
         }
     ];

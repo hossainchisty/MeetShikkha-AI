@@ -1,5 +1,6 @@
 'use client';
 
+import { PLANS } from '@/lib/constants/plans';
 import { useLanguage } from '@/lib/LanguageContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
@@ -39,40 +40,6 @@ export default function LandingPage() {
     { name: 'ICT', bangla: isBn ? 'আইসিটি' : 'ICT', icon: Zap, color: 'text-indigo-600', bg: 'bg-indigo-50 dark:bg-indigo-900/20' },
   ];
 
-  const PRICING = [
-    {
-      name: 'Free',
-      bangla: isBn ? 'ফ্রি' : 'Free',
-      price: isBn ? '৳০' : '$0',
-      features: isBn
-        ? ['প্রতিদিন ৩টি প্রশ্ন', 'বেসিক ব্যাখ্যা', 'সব বিষয় এক্সেস', 'মোবাইল সাপোর্ট']
-        : ['3 questions per day', 'Basic explanation', 'All subjects access', 'Mobile support'],
-      button: isBn ? 'ফ্রি শুরু করুন' : 'Start Free',
-      popular: false
-    },
-    {
-      name: 'Pro',
-      bangla: isBn ? 'প্রো' : 'Pro',
-      price: isBn ? '৳২৯৯' : '$3',
-      period: isBn ? '/মাস' : '/mo',
-      features: isBn
-        ? ['আনলিমিটেড প্রশ্ন', 'ধাপে ধাপে বিস্তারিত ব্যাখ্যা', 'ফটো আপলোড (OCR)', '১০০% নয়েজ ফ্রি এক্সপেরিয়েন্স', 'প্রায়োরিটি সাপোর্ট']
-        : ['Unlimited questions', 'Step-by-step explanations', 'Photo upload (OCR)', '100% Ad-free experience', 'Priority support'],
-      button: isBn ? 'প্রো মেম্বার হন' : 'Go Pro',
-      popular: true
-    },
-    {
-      name: 'Student Plus',
-      bangla: isBn ? 'স্টুডেন্ট প্লাস' : 'Student Plus',
-      price: isBn ? '৳৭৯৯' : '$8',
-      period: isBn ? '/বছর' : '/yr',
-      features: isBn
-        ? ['সব প্রো ফিচার', 'এআই ভিডিও টিউটোরিয়াল', 'অফলাইন পড়ার সুবিধা', 'এক্সাম প্রিপারেশন নোট']
-        : ['All Pro features', 'AI video tutorials', 'Offline study mode', 'Exam prep notes'],
-      button: isBn ? 'বছরের সেরা ডিল নিন' : 'Best Deal',
-      popular: false
-    }
-  ];
 
   const FAQS = [
     {
@@ -250,17 +217,24 @@ export default function LandingPage() {
           <h2 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-6">{t.landing.pricingTitle}</h2>
           <p className="text-slate-500 dark:text-slate-400 font-medium mb-20">{t.landing.pricingSubtitle}</p>
           <div className="grid md:grid-cols-3 gap-8 items-stretch">
-            {PRICING.map((p, i) => (
-              <div key={i} className={`p-10 rounded-[44px] bg-white dark:bg-slate-800 border ${p.popular ? 'border-indigo-500 shadow-2xl dark:shadow-none ring-4 ring-indigo-50 dark:ring-indigo-900/20' : 'border-slate-100 dark:border-slate-700'} flex flex-col relative text-left transition-all hover:-translate-y-1`}>
+            {PLANS.map((p, i) => (
+              <div key={p.id} className={`p-10 rounded-[44px] bg-white dark:bg-slate-800 border ${p.popular ? 'border-indigo-500 shadow-2xl dark:shadow-none ring-4 ring-indigo-50 dark:ring-indigo-900/20' : 'border-slate-100 dark:border-slate-700'} flex flex-col relative text-left transition-all hover:-translate-y-1`}>
                 {p.popular && <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-indigo-600 text-white px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest">Most Popular</div>}
-                <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">{p.bangla}</h3>
-                <div className="flex items-baseline gap-1 mb-8"><span className="text-5xl font-black text-slate-900 dark:text-white">{p.price}</span><span className="text-slate-400 dark:text-slate-500 font-bold">{p.period || ''}</span></div>
+                <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-white">{p.label[language]}</h3>
+                <div className="flex items-baseline gap-1 mb-8">
+                  <span className="text-5xl font-black text-slate-900 dark:text-white">{p.price[language]}</span>
+                  <span className="text-slate-400 dark:text-slate-500 font-bold">{p.period?.[language] || ''}</span>
+                </div>
                 <div className="space-y-4 mb-12 flex-1">
-                  {p.features.map((f, fi) => (
-                    <div key={fi} className="flex gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium leading-snug"><CheckCircle2 size={18} className="text-indigo-500 shrink-0" /> {f}</div>
+                  {p.features[language].map((f, fi) => (
+                    <div key={fi} className="flex gap-3 text-sm text-slate-600 dark:text-slate-300 font-medium leading-snug">
+                      <CheckCircle2 size={18} className="text-indigo-500 shrink-0" /> {f}
+                    </div>
                   ))}
                 </div>
-                <button className={`w-full py-5 rounded-3xl font-black transition-all ${p.popular ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none' : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600'}`}>{p.button}</button>
+                <button className={`w-full py-5 rounded-3xl font-black transition-all ${p.popular ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-200 dark:shadow-none' : 'bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-600'}`}>
+                  {p.id === 'free' ? (language === 'bn' ? 'ফ্রি শুরু করুন' : 'Start Free') : (p.id === 'pro' ? (language === 'bn' ? 'প্রো মেম্বার হন' : 'Go Pro') : (language === 'bn' ? 'বছরের সেরা ডিল নিন' : 'Best Deal'))}
+                </button>
               </div>
             ))}
           </div>

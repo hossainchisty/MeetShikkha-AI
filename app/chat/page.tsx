@@ -11,6 +11,7 @@ import Link from 'next/link';
 // @ts-ignore
 import renderMathInElement from 'katex/dist/contrib/auto-render';
 import {
+  AlertTriangle,
   Atom,
   Calculator,
   Check,
@@ -34,7 +35,8 @@ import {
   Sun,
   Trash2,
   User,
-  X
+  X,
+  Zap
 } from 'lucide-react';
 import { marked } from 'marked';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -84,6 +86,8 @@ export default function Home() {
   const [editingChatId, setEditingChatId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [menuOpenChatId, setMenuOpenChatId] = useState<string | null>(null);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [chatToDelete, setChatToDelete] = useState<string | null>(null);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -267,7 +271,7 @@ export default function Home() {
 
     // Frontend Check
     if (dailyUsage >= maxUsage) {
-      setError(`Daily limit reached for ${userPlan} plan. Please upgrade.`);
+      setShowLimitModal(true);
       setIsTyping(false);
       return;
     }
@@ -344,7 +348,13 @@ export default function Home() {
 
   const handleDeleteChat = async (e: React.MouseEvent, chatId: string) => {
     e.stopPropagation();
-    if (!confirm(t.settings.languageName === 'বাংলা' ? "আপনি কি নিশ্চিত যে আপনি এই চ্যাটটি মুছে ফেলতে চান?" : "Are you sure you want to delete this chat?")) return;
+    setChatToDelete(chatId);
+  };
+
+  const confirmDelete = async () => {
+    if (!chatToDelete) return;
+    const chatId = chatToDelete;
+    setChatToDelete(null);
     try {
       await fetch(`/api/conversations/${chatId}`, { method: 'DELETE' });
       if (currentChatId === chatId) startNewQuestion();
@@ -593,7 +603,7 @@ export default function Home() {
                       }}
                       className={`w-full text-left px-4 py-3 hover:bg-[#F9FAFB] dark:hover:bg-slate-800 text-sm font-semibold flex items-center gap-3 transition-colors ${selectedSubject === s.name ? `${theme.text} ${theme.bgLight}` : 'text-slate-600 dark:text-slate-400'}`}
                     >
-                      <div className={selectedSubject === s.name ? getSubjectTextColor(s.name) : 'text-slate-400'}>
+                      <div className={getSubjectTextColor(s.name)}>
                         {getSubjectIcon(s.name, "w-4 h-4")}
                       </div>
                       {subjectNames[s.name] || s.name}
@@ -770,6 +780,73 @@ export default function Home() {
           </div>
         )}
       </main>
+      {/* Usage Limit Modal */}
+      {showLimitModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setShowLimitModal(false)} />
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[40px] p-8 md:p-10 max-w-md w-full relative z-10 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 text-center">
+            <div className={`w-20 h-20 rounded-3xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-500 mx-auto mb-8 ring-8 ring-amber-50/50 dark:ring-amber-900/10`}>
+              <Zap size={40} className="fill-current" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-white mb-4 tracking-tight">
+              {t.settings.languageName === 'বাংলা' ? 'আজকের লিমিট শেষ!' : 'Daily Limit Reached!'}
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium mb-10 leading-relaxed">
+              {t.settings.languageName === 'বাংলা'
+                ? `আপনি আপনার ${userPlan} প্ল্যানের লিমিট (${maxUsage}) অতিক্রম করেছেন। কোনো বাধা ছাড়াই ব্যবহার চালিয়ে যেতে প্রো মেম্বারশিপে আপগ্রেড করুন।`
+                : `You've reached your ${userPlan} plan limit of ${maxUsage} questions. Upgrade to Pro for unlimited access and premium features.`}
+            </p>
+            <div className="flex flex-col gap-4">
+              <Link
+                href="/dashboard/subscription"
+                className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black shadow-xl shadow-indigo-100 dark:shadow-none hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                {t.chat.upgrade}
+              </Link>
+              <button
+                onClick={() => setShowLimitModal(false)}
+                className="w-full py-4 rounded-2xl font-bold text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
+              >
+                {t.common.cancel}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {chatToDelete && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-md animate-in fade-in duration-300" onClick={() => setChatToDelete(null)} />
+          <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[40px] p-8 md:p-10 max-w-sm w-full relative z-10 shadow-2xl animate-in zoom-in-95 slide-in-from-bottom-10 duration-500 text-center">
+            <div className="w-16 h-16 rounded-2xl bg-rose-50 dark:bg-rose-900/20 flex items-center justify-center text-rose-500 mx-auto mb-6">
+              <AlertTriangle size={32} />
+            </div>
+            <h2 className="text-xl font-black text-slate-900 dark:text-white mb-3">
+              {t.settings.languageName === 'বাংলা' ? 'আপনি কি নিশ্চিত?' : 'Are you sure?'}
+            </h2>
+            <p className="text-slate-500 dark:text-slate-400 font-medium text-sm mb-8 leading-relaxed">
+              {t.settings.languageName === 'বাংলা'
+                ? 'এই চ্যাটটি মুছে ফেললে পুনরায় আর ফিরে পাওয়া সম্ভব হবে না।'
+                : 'Deleted conversations cannot be recovered. Do you want to continue?'}
+            </p>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => setChatToDelete(null)}
+                className="py-3.5 rounded-xl font-bold text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all border border-slate-100 dark:border-slate-800"
+              >
+                {t.common.cancel}
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="bg-rose-500 text-white py-3.5 rounded-xl font-black shadow-lg shadow-rose-100 dark:shadow-none hover:bg-rose-600 transition-all"
+              >
+                {t.settings.languageName === 'বাংলা' ? 'হ্যাঁ, মুছুন' : 'Yes, Delete'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

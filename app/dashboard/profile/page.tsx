@@ -1,10 +1,12 @@
 'use client';
+import { PLANS } from "@/lib/constants/plans";
 import { useLanguage } from "@/lib/LanguageContext";
+import { supabase } from "@/lib/supabase";
 import { useTheme } from "@/lib/ThemeContext";
 import { useClerk, useUser } from "@clerk/nextjs";
 import { Bell, Camera, ChevronLeft, Eye, Globe, Lock, LogOut, Mail, Moon, Settings, Shield, ShieldCheck, Sparkles, Sun, User, Zap } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ProfilePage() {
     const { user, isLoaded } = useUser();
@@ -12,6 +14,31 @@ export default function ProfilePage() {
     const { theme, toggleTheme } = useTheme();
     const { language, setLanguage, t } = useLanguage();
     const [activeTab, setActiveTab] = useState('profile');
+    const [userPlanId, setUserPlanId] = useState<string>('free');
+
+    useEffect(() => {
+        const fetchUserPlan = async () => {
+            if (!user) return;
+            try {
+                const { data, error } = await supabase
+                    .from('profiles')
+                    .select('subscription_tier')
+                    .eq('clerk_id', user.id)
+                    .single();
+
+                if (data && data.subscription_tier) {
+                    // Normalize to lowercase to match our PLANS id
+                    setUserPlanId(data.subscription_tier.toLowerCase());
+                }
+            } catch (e) {
+                console.error("Error fetching user plan:", e);
+            }
+        };
+
+        if (isLoaded && user) {
+            fetchUserPlan();
+        }
+    }, [user, isLoaded]);
 
     if (!isLoaded) return null;
 
@@ -102,7 +129,11 @@ export default function ProfilePage() {
                                 </div>
                                 <div>
                                     <h4 className="font-black text-slate-900 dark:text-white mb-0.5 tracking-tight uppercase text-xs">{t.profile.planDetails}</h4>
-                                    <p className="font-bold text-slate-500 dark:text-slate-400 text-sm">{t.common.proMember} ২০৩১ পর্যন্ত</p>
+                                    <p className="font-bold text-slate-500 dark:text-slate-400 text-sm">
+                                        {userPlanId === 'free' ? (language === 'bn' ? 'ফ্রি প্ল্যান' : 'Free Plan') :
+                                            userPlanId === 'pro' ? (language === 'bn' ? 'প্রো মেম্বার' : 'Pro Member') :
+                                                (language === 'bn' ? 'স্টুডেন্ট প্লাস' : 'Student Plus')}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -121,7 +152,7 @@ export default function ProfilePage() {
                                     <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400"><Lock size={20} /></div>
                                     <div>
                                         <h4 className="font-bold text-slate-800 dark:text-slate-200">{t.profile.changePassword}</h4>
-                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">{t.profile.lastChanged}: ২ মাস আগে</p>
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">{t.profile.lastChanged}: {t.profile.lastChanged2Months}</p>
                                     </div>
                                 </div>
                                 <button className="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">{t.common.update}</button>
@@ -165,6 +196,77 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 );
+            case 'subscription':
+                const currentPlan = PLANS.find(p => p.id === userPlanId) || PLANS[0];
+
+                return (
+                    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        {/* Status Card */}
+                        <div className="bg-indigo-600 rounded-[32px] p-8 text-white relative overflow-hidden shadow-2xl shadow-indigo-100 dark:shadow-none">
+                            <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-[80px] rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                            <div className="relative z-10">
+                                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                    <div>
+                                        <p className="text-indigo-100 font-bold uppercase tracking-widest text-[10px] mb-2">{t.profile.currentStatus}</p>
+                                        <h2 className="text-3xl font-black mb-4">
+                                            {currentPlan.label[language]} {language === 'bn' ? 'মেম্বারশিপ' : 'Membership'}
+                                        </h2>
+                                        <div className="flex flex-wrap gap-3">
+                                            <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-bold border border-white/10">
+                                                <ShieldCheck size={14} /> {t.profile.activeUntil2031}
+                                            </div>
+                                            <div className="flex items-center gap-2 bg-white/15 backdrop-blur-md px-4 py-2 rounded-xl text-xs font-bold border border-white/10">
+                                                <Zap size={14} /> {t.profile.oneLakhAnswers}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button className="bg-white text-indigo-600 px-8 py-4 rounded-2xl font-black shadow-xl hover:scale-105 active:scale-95 transition-all text-sm">
+                                        {t.profile.renewPlan}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Pricing Grid */}
+                        <div className="grid md:grid-cols-3 gap-6">
+                            {PLANS.map((p) => {
+                                const isCurrent = p.id === userPlanId;
+
+                                return (
+                                    <div key={p.id} className={`p-8 rounded-[38px] bg-white dark:bg-slate-900 border transition-all duration-500 hover:-translate-y-1 relative flex flex-col ${p.popular
+                                        ? 'border-indigo-500 shadow-xl shadow-indigo-100 dark:shadow-none ring-2 ring-indigo-50 dark:ring-indigo-900/10'
+                                        : 'border-slate-100 dark:border-slate-800 shadow-sm'
+                                        }`}>
+                                        <h3 className="text-base font-black mb-3 text-slate-800 dark:text-slate-100">{p.label[language]}</h3>
+                                        <div className="flex items-baseline gap-1 mb-6">
+                                            <span className="text-3xl font-black text-slate-900 dark:text-white">{p.price[language]}</span>
+                                            <span className="text-slate-400 dark:text-slate-500 font-bold text-xs">{p.period?.[language] || ''}</span>
+                                        </div>
+                                        <div className="space-y-3 mb-8 flex-1">
+                                            {p.features[language].map((f, fi) => (
+                                                <div key={fi} className="flex gap-2 text-[12px] text-slate-600 dark:text-slate-400 font-bold leading-tight">
+                                                    <ShieldCheck size={14} className="text-indigo-500 shrink-0 mt-0.5" />
+                                                    {f}
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <button
+                                            disabled={isCurrent}
+                                            className={`w-full py-4 rounded-2xl text-xs font-black transition-all ${isCurrent
+                                                ? 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-600 cursor-default border border-slate-100 dark:border-slate-700'
+                                                : p.popular
+                                                    ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-100 dark:shadow-none'
+                                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                                }`}
+                                        >
+                                            {isCurrent ? (language === 'bn' ? 'বর্তমান প্ল্যান' : 'Current Plan') : (language === 'bn' ? 'আপগ্রেড করুন' : 'Upgrade')}
+                                        </button>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
             case 'preferences':
                 interface SettingItem {
                     id: string;
@@ -189,7 +291,7 @@ export default function ProfilePage() {
                                 id: 'darkMode',
                                 name: t.settings.darkMode,
                                 icon: theme === 'dark' ? Sun : Moon,
-                                description: theme === 'dark' ? (language === 'bn' ? "চোখের আরামের জন্য লাইট থিম ব্যবহার করুন" : "Use light theme for eye comfort") : (language === 'bn' ? "চোখের আরামের জন্য ডার্ক থিম ব্যবহার করুন" : "Use dark theme for eye comfort"),
+                                description: theme === 'dark' ? t.profile.lightThemeDesc : t.profile.darkThemeDesc,
                                 active: theme === 'dark',
                                 onClick: toggleTheme
                             },
@@ -197,8 +299,8 @@ export default function ProfilePage() {
                                 id: 'language',
                                 name: t.settings.language,
                                 icon: Globe,
-                                description: language === 'bn' ? "বাংলা বা ইংরেজি ভাষা সেট করুন" : "Set Bangla or English language",
-                                value: language === 'bn' ? 'বাংলা' : 'English',
+                                description: t.profile.languageSettingDesc,
+                                value: t.settings.languageName,
                                 onClick: () => setLanguage(language === 'bn' ? 'en' : 'bn')
                             },
                         ]
@@ -206,9 +308,9 @@ export default function ProfilePage() {
                     {
                         title: t.settings.security,
                         items: [
-                            { id: 'notifications', name: t.settings.notifications, icon: Bell, description: "নতুন আপডেট এবং খবরের বার্তা পান", active: true },
-                            { id: 'privacy', name: t.settings.privacy, icon: Eye, description: "আপনার ডাটা কার সাথে শেয়ার করবেন তা নিয়ন্ত্রণ করুন" },
-                            { id: 'security', name: t.settings.security, icon: Shield, description: "দ্বি-স্তর বিশিষ্ট নিরাপত্তা ব্যবস্থার সেটিংস" },
+                            { id: 'notifications', name: t.settings.notifications, icon: Bell, description: t.profile.notificationsDesc, active: true },
+                            { id: 'privacy', name: t.settings.privacy, icon: Eye, description: t.profile.privacyDesc },
+                            { id: 'security', name: t.settings.security, icon: Shield, description: t.profile.securityDesc },
                         ]
                     }
                 ];
@@ -310,6 +412,7 @@ export default function ProfilePage() {
                     <aside className="space-y-2">
                         {[
                             { id: 'profile', label: t.profile.profileInfo, icon: User },
+                            { id: 'subscription', label: t.common.subscription, icon: Zap },
                             { id: 'security', label: t.settings.security, icon: Lock },
                             { id: 'notifications', label: t.settings.notifications, icon: Bell },
                             { id: 'preferences', label: t.settings.preferences, icon: Settings },
