@@ -3,6 +3,11 @@ import { supabase } from "@/lib/supabase";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+/**
+ * POST request handler for creating a new conversation
+ * @param req - Request object
+ * @returns - NextResponse object containing the new conversation
+ */
 export async function POST(req: Request) {
     try {
         const { userId } = await auth();

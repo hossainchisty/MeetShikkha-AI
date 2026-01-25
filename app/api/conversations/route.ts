@@ -2,6 +2,11 @@ import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+/**
+ * GET request handler for fetching all conversations
+ * @param req - Request object
+ * @returns - NextResponse object containing the conversations
+ */
 export async function GET(req: Request) {
     try {
         const { userId } = await auth();

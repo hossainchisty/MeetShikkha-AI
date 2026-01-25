@@ -1,49 +1,85 @@
 import { supabase } from "@/lib/supabase";
 import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
+/**
+ * GET request handler for fetching a specific conversation and its messages
+ * @param request - NextRequest object
+ * @param params - Promise object containing the chat ID
+ * @returns - NextResponse object containing the chat and messages
+ */
 export async function GET(
-    req: Request,
-    { params }: { params: { id: string } }
+    request: NextRequest,
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const { id } = await params;
+
         const { userId } = await auth();
-        if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        if (!userId) {
+            return NextResponse.json(
+                { error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
 
-        const { data: profileId } = await supabase.rpc('get_profile_id_only', { p_clerk_id: userId });
-        if (!profileId) return NextResponse.json({ error: "User profile not found" }, { status: 404 });
+        const { data: profileId } = await supabase.rpc(
+            "get_profile_id_only",
+            { p_clerk_id: userId }
+        );
 
-        // Fetch Chat Metadata
+        if (!profileId) {
+            return NextResponse.json(
+                { error: "User profile not found" },
+                { status: 404 }
+            );
+        }
+
+        // Fetch chat metadata
         const { data: chat, error: chatError } = await supabase
-            .from('chats')
-            .select('*')
-            .eq('id', id)
-            .eq('user_id', profileId)
+            .from("chats")
+            .select("*")
+            .eq("id", id)
+            .eq("user_id", profileId)
             .single();
 
         if (chatError || !chat) {
-            return NextResponse.json({ error: "Conversation not found" }, { status: 404 });
+            return NextResponse.json(
+                { error: "Conversation not found" },
+                { status: 404 }
+            );
         }
 
-        // Fetch Messages
+        // Fetch messages
         const { data: messages, error: msgError } = await supabase
-            .from('messages')
-            .select('*')
-            .eq('chat_id', id)
-            .order('created_at', { ascending: true });
+            .from("messages")
+            .select("*")
+            .eq("chat_id", id)
+            .order("created_at", { ascending: true });
 
         if (msgError) {
-            return NextResponse.json({ error: "Failed to fetch messages" }, { status: 500 });
+            return NextResponse.json(
+                { error: "Failed to fetch messages" },
+                { status: 500 }
+            );
         }
 
         return NextResponse.json({ chat, messages });
 
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json(
+            { error: error?.message ?? "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }
 
+/**
+ * PATCH request handler for updating a specific conversation
+ * @param req - Request object
+ * @param params - Promise object containing the chat ID
+ * @returns - NextResponse object containing the updated chat
+ */
 export async function PATCH(
     req: Request,
     { params }: { params: { id: string } }
@@ -82,6 +118,12 @@ export async function PATCH(
     }
 }
 
+/**
+ * DELETE request handler for deleting a specific conversation
+ * @param req - Request object
+ * @param params - Promise object containing the chat ID
+ * @returns - NextResponse object containing the deleted chat
+ */
 export async function DELETE(
     req: Request,
     { params }: { params: { id: string } }
