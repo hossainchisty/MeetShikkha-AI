@@ -2,9 +2,9 @@ export const translations = {
     bn: {
         common: {
             appName: "MeetShikkha AI",
-            dashboard: "ড্যাশবোর্ড",
+            dashboard: "পোর্টালে যাও",
             login: "লগ ইন",
-            signup: "সাইন আপ",
+            signup: "লগ ইন / সাইন আপ",
             logout: "লগ আউট",
             settings: "সেটিংস",
             profile: "প্রোফাইল",
@@ -37,8 +37,7 @@ export const translations = {
             ctaDashboard: "আপনার পড়াশোনা চালিয়ে যান",
         },
         chat: {
-            welcome: "সবিনয় সম্ভাষণ",
-            askAnything: "আজ তুমি কী শিখতে চাও?",
+            askAnything: "প্রশ্ন করে ইনস্ট্যান্ট উত্তর দেখো",
             inputPlaceholder: "তোমার প্রশ্ন এখানে লেখো...",
             typing: "MeetShikkha AI লিখছে...",
             upgrade: "আপগ্রেড",
