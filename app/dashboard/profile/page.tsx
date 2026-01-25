@@ -1,15 +1,266 @@
 'use client';
+import { useLanguage } from "@/lib/LanguageContext";
+import { useTheme } from "@/lib/ThemeContext";
 import { useClerk, useUser } from "@clerk/nextjs";
-import { Bell, Camera, ChevronLeft, Lock, LogOut, Mail, Settings, ShieldCheck, Sparkles, User, Zap } from "lucide-react";
+import { Bell, Camera, ChevronLeft, Eye, Globe, Lock, LogOut, Mail, Moon, Settings, Shield, ShieldCheck, Sparkles, Sun, User, Zap } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
 export default function ProfilePage() {
     const { user, isLoaded } = useUser();
     const { signOut } = useClerk();
+    const { theme, toggleTheme } = useTheme();
+    const { language, setLanguage, t } = useLanguage();
     const [activeTab, setActiveTab] = useState('profile');
 
     if (!isLoaded) return null;
+
+    const renderTabContent = () => {
+        switch (activeTab) {
+            case 'profile':
+                return (
+                    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.02)] relative overflow-hidden group transition-colors duration-500">
+                            <div className="flex flex-col md:flex-row gap-10 items-start relative z-10">
+                                {/* Avatar Section */}
+                                <div className="relative group/avatar shrink-0">
+                                    <div className="w-32 h-32 rounded-[40px] overflow-hidden ring-4 ring-slate-50 dark:ring-slate-800 shadow-2xl transition-transform group-hover/avatar:scale-[1.02]">
+                                        <img
+                                            src={user?.imageUrl}
+                                            alt="Profile"
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <button className="absolute -bottom-2 -right-2 bg-indigo-600 text-white p-3 rounded-2xl shadow-xl hover:scale-110 active:scale-95 transition-all ring-4 ring-white dark:ring-slate-900">
+                                        <Camera size={18} />
+                                    </button>
+                                </div>
+
+                                {/* Form Section */}
+                                <div className="flex-1 w-full space-y-8">
+                                    <div>
+                                        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{t.profile.personalInfo}</h2>
+                                        <p className="text-slate-400 dark:text-slate-500 font-medium text-sm">{t.profile.personalInfoDesc}</p>
+                                    </div>
+
+                                    <div className="grid md:grid-cols-2 gap-6">
+                                        <div className="space-y-2 text-left">
+                                            <div className="flex items-center h-6 px-1">
+                                                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t.profile.fullName}</label>
+                                            </div>
+                                            <div className="relative">
+                                                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600" size={18} />
+                                                <input
+                                                    type="text"
+                                                    defaultValue={user?.fullName || ''}
+                                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-700 dark:text-white focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600 pointer-events-none"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="space-y-2 text-left">
+                                            <div className="flex items-center justify-between h-6 px-1">
+                                                <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t.profile.emailAddress}</label>
+                                                <div className="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider">{t.common.verified}</div>
+                                            </div>
+                                            <div className="relative">
+                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600" size={18} />
+                                                <input
+                                                    type="email"
+                                                    defaultValue={user?.primaryEmailAddress?.emailAddress || ''}
+                                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-700 dark:text-white focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600 pointer-events-none"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex flex-wrap gap-4 pt-4">
+                                        <button className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-xl shadow-indigo-100 dark:shadow-none hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                            {t.common.update}
+                                        </button>
+                                        <button className="px-8 py-4 rounded-2xl font-bold text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                                            {t.common.cancel}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Verification Status Card */}
+                        <div className="grid md:grid-cols-2 gap-6">
+                            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] p-6 md:p-8 flex items-center gap-4 md:gap-6 shadow-sm">
+                                <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-500 dark:text-emerald-400 shrink-0">
+                                    <ShieldCheck size={28} />
+                                </div>
+                                <div>
+                                    <h4 className="font-black text-slate-900 dark:text-white mb-0.5 tracking-tight uppercase text-xs">{t.profile.securityStatus}</h4>
+                                    <p className="font-bold text-slate-500 dark:text-slate-400 text-sm">{t.profile.accountSafe}</p>
+                                </div>
+                            </div>
+                            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] p-6 md:p-8 flex items-center gap-4 md:gap-6 shadow-sm">
+                                <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500 dark:text-indigo-400 shrink-0">
+                                    <Zap size={28} />
+                                </div>
+                                <div>
+                                    <h4 className="font-black text-slate-900 dark:text-white mb-0.5 tracking-tight uppercase text-xs">{t.profile.planDetails}</h4>
+                                    <p className="font-bold text-slate-500 dark:text-slate-400 text-sm">{t.common.proMember} ২০৩১ পর্যন্ত</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            case 'security':
+                return (
+                    <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] p-8 md:p-12 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="mb-10">
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{t.profile.securitySettings}</h2>
+                            <p className="text-slate-400 dark:text-slate-500 font-medium text-sm">{t.profile.securitySettingsDesc}</p>
+                        </div>
+                        <div className="space-y-6">
+                            <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-600 dark:text-indigo-400"><Lock size={20} /></div>
+                                    <div>
+                                        <h4 className="font-bold text-slate-800 dark:text-slate-200">{t.profile.changePassword}</h4>
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">{t.profile.lastChanged}: ২ মাস আগে</p>
+                                    </div>
+                                </div>
+                                <button className="px-5 py-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">{t.common.update}</button>
+                            </div>
+                            <div className="flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400"><ShieldCheck size={20} /></div>
+                                    <div>
+                                        <h4 className="font-bold text-slate-800 dark:text-slate-200">{t.profile.twoFactor}</h4>
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">{t.profile.twoFactorDesc}</p>
+                                    </div>
+                                </div>
+                                <div className="w-12 h-6 bg-indigo-600 rounded-full relative cursor-pointer"><div className="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                );
+            case 'notifications':
+                return (
+                    <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] p-8 md:p-12 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="mb-10">
+                            <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">{t.profile.notificationSettings}</h2>
+                            <p className="text-slate-400 dark:text-slate-500 font-medium text-sm">{t.profile.notificationSettingsDesc}</p>
+                        </div>
+                        <div className="space-y-4">
+                            {[
+                                { title: t.profile.emailNotifications, desc: t.profile.emailNotificationsDesc, active: true },
+                                { title: t.profile.pushNotifications, desc: t.profile.pushNotificationsDesc, active: true },
+                                { title: t.profile.weeklyReport, desc: t.profile.weeklyReportDesc, active: false },
+                            ].map((item, i) => (
+                                <div key={i} className="flex items-center justify-between p-6 hover:bg-slate-50 dark:hover:bg-slate-800/50 rounded-2xl transition-all border border-transparent hover:border-slate-100 dark:hover:border-slate-800">
+                                    <div>
+                                        <h4 className="font-bold text-slate-800 dark:text-slate-200">{item.title}</h4>
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium">{item.desc}</p>
+                                    </div>
+                                    <div className={`w-12 h-6 rounded-full relative cursor-pointer transition-all ${item.active ? 'bg-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}>
+                                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${item.active ? 'right-1' : 'left-1'}`}></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            case 'preferences':
+                interface SettingItem {
+                    id: string;
+                    name: any;
+                    icon: any;
+                    description: string;
+                    active?: boolean;
+                    value?: string;
+                    onClick?: () => void;
+                }
+
+                interface SettingGroup {
+                    title: string;
+                    items: SettingItem[];
+                }
+
+                const SETTINGS_GROUPS: SettingGroup[] = [
+                    {
+                        title: t.settings.preferences,
+                        items: [
+                            {
+                                id: 'darkMode',
+                                name: t.settings.darkMode,
+                                icon: theme === 'dark' ? Sun : Moon,
+                                description: theme === 'dark' ? (language === 'bn' ? "চোখের আরামের জন্য লাইট থিম ব্যবহার করুন" : "Use light theme for eye comfort") : (language === 'bn' ? "চোখের আরামের জন্য ডার্ক থিম ব্যবহার করুন" : "Use dark theme for eye comfort"),
+                                active: theme === 'dark',
+                                onClick: toggleTheme
+                            },
+                            {
+                                id: 'language',
+                                name: t.settings.language,
+                                icon: Globe,
+                                description: language === 'bn' ? "বাংলা বা ইংরেজি ভাষা সেট করুন" : "Set Bangla or English language",
+                                value: language === 'bn' ? 'বাংলা' : 'English',
+                                onClick: () => setLanguage(language === 'bn' ? 'en' : 'bn')
+                            },
+                        ]
+                    },
+                    {
+                        title: t.settings.security,
+                        items: [
+                            { id: 'notifications', name: t.settings.notifications, icon: Bell, description: "নতুন আপডেট এবং খবরের বার্তা পান", active: true },
+                            { id: 'privacy', name: t.settings.privacy, icon: Eye, description: "আপনার ডাটা কার সাথে শেয়ার করবেন তা নিয়ন্ত্রণ করুন" },
+                            { id: 'security', name: t.settings.security, icon: Shield, description: "দ্বি-স্তর বিশিষ্ট নিরাপত্তা ব্যবস্থার সেটিংস" },
+                        ]
+                    }
+                ];
+
+                return (
+                    <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                        {SETTINGS_GROUPS.map((group, gIdx) => (
+                            <div key={gIdx}>
+                                <h3 className="text-[12px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4 px-4">{group.title}</h3>
+                                <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-sm">
+                                    {group.items.map((item, iIdx) => (
+                                        <div
+                                            key={item.id}
+                                            onClick={() => item.onClick?.()}
+                                            className={`p-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group ${iIdx !== group.items.length - 1 ? 'border-b border-slate-50 dark:border-slate-800' : ''}`}
+                                        >
+                                            <div className="flex items-center gap-5">
+                                                <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-all">
+                                                    <item.icon size={22} />
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-bold text-slate-800 dark:text-slate-200 text-[15px]">{item.name}</h4>
+                                                    <p className="text-[12px] font-medium text-slate-400 dark:text-slate-500 mt-0.5">{item.description}</p>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex items-center">
+                                                {item.active !== undefined ? (
+                                                    <div className={`w-11 h-6 rounded-full transition-all relative ${item.active ? 'bg-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}>
+                                                        <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${item.active ? 'left-6' : 'left-1'}`}></div>
+                                                    </div>
+                                                ) : null}
+
+                                                {item.value ? (
+                                                    <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-3 py-1 rounded-lg">{item.value}</span>
+                                                ) : null}
+
+                                                {item.active === undefined && !item.value ? (
+                                                    <ChevronLeft size={16} className="text-slate-300 dark:text-slate-600 rotate-180" />
+                                                ) : null}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                );
+            default:
+                return null;
+        }
+    };
 
     return (
         <div className="min-h-screen bg-slate-50/30 dark:bg-[#0f172a] relative overflow-hidden font-sans selection:bg-indigo-100 dark:selection:bg-indigo-900 transition-colors duration-500">
@@ -30,16 +281,25 @@ export default function ProfilePage() {
                             <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-100 dark:shadow-none">
                                 <Sparkles size={18} />
                             </div>
-                            <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">অ্যাকাউন্ট সেটিংস</h1>
+                            <h1 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">{t.profile.accountSettings}</h1>
                         </div>
                     </div>
-                    <button
-                        onClick={() => signOut()}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-rose-500 dark:text-rose-400 font-bold hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all text-sm"
-                    >
-                        <LogOut size={18} />
-                        লগ আউট
-                    </button>
+
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2.5 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-xl text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all active:scale-95"
+                        >
+                            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
+                        </button>
+                        <button
+                            onClick={() => signOut()}
+                            className="flex items-center gap-2 px-4 py-2 rounded-xl text-rose-500 dark:text-rose-400 font-bold hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all text-sm"
+                        >
+                            <LogOut size={18} />
+                            {t.common.logout}
+                        </button>
+                    </div>
                 </div>
             </nav>
 
@@ -49,120 +309,28 @@ export default function ProfilePage() {
                     {/* Custom Sidebar Navigation */}
                     <aside className="space-y-2">
                         {[
-                            { id: 'profile', label: 'প্রোফাইল তথ্য', icon: User },
-                            { id: 'security', label: 'নিরাপত্তা', icon: Lock },
-                            { id: 'notifications', label: 'নোটিফিকেশন', icon: Bell },
-                            { id: 'preferences', label: 'পছন্দসমূহ', icon: Settings },
+                            { id: 'profile', label: t.profile.profileInfo, icon: User },
+                            { id: 'security', label: t.settings.security, icon: Lock },
+                            { id: 'notifications', label: t.settings.notifications, icon: Bell },
+                            { id: 'preferences', label: t.settings.preferences, icon: Settings },
                         ].map((tab) => (
-                            tab.id === 'preferences' ? (
-                                <Link
-                                    key={tab.id}
-                                    href="/dashboard/settings"
-                                    className="w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-bold text-sm transition-all text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 hover:shadow-sm"
-                                >
-                                    <tab.icon size={18} />
-                                    {tab.label}
-                                </Link>
-                            ) : (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === tab.id
-                                        ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-100 dark:shadow-none'
-                                        : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 hover:shadow-sm'
-                                        }`}
-                                >
-                                    <tab.icon size={18} />
-                                    {tab.label}
-                                </button>
-                            )
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-bold text-sm transition-all ${activeTab === tab.id
+                                    ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-100 dark:shadow-none'
+                                    : 'text-slate-500 dark:text-slate-400 hover:bg-white dark:hover:bg-slate-800 hover:text-indigo-600 dark:hover:text-indigo-400 hover:shadow-sm'
+                                    }`}
+                            >
+                                <tab.icon size={18} />
+                                {tab.label}
+                            </button>
                         ))}
                     </aside>
 
-                    {/* Custom Form Area (Replacing Clerk UI) */}
-                    <div className="space-y-6">
-                        <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] p-8 md:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.02)] relative overflow-hidden group transition-colors duration-500">
-                            <div className="flex flex-col md:flex-row gap-10 items-start relative z-10">
-                                {/* Avatar Section */}
-                                <div className="relative group/avatar shrink-0">
-                                    <div className="w-32 h-32 rounded-[40px] overflow-hidden ring-4 ring-slate-50 dark:ring-slate-800 shadow-2xl transition-transform group-hover/avatar:scale-[1.02]">
-                                        <img
-                                            src={user?.imageUrl}
-                                            alt="Profile"
-                                            className="w-full h-full object-cover"
-                                        />
-                                    </div>
-                                    <button className="absolute -bottom-2 -right-2 bg-indigo-600 text-white p-3 rounded-2xl shadow-xl hover:scale-110 active:scale-95 transition-all ring-4 ring-white dark:ring-slate-900">
-                                        <Camera size={18} />
-                                    </button>
-                                </div>
-
-                                {/* Form Section */}
-                                <div className="flex-1 w-full space-y-8">
-                                    <div>
-                                        <h2 className="text-2xl font-black text-slate-900 dark:text-white mb-2">আপনার ব্যক্তিগত তথ্য</h2>
-                                        <p className="text-slate-400 dark:text-slate-500 font-medium text-sm">আপনার বিস্তারিত তথ্য এখান থেকে আপডেট করতে পারেন</p>
-                                    </div>
-
-                                    <div className="grid md:grid-cols-2 gap-6">
-                                        <div className="space-y-2 text-left">
-                                            <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">পুরো নাম</label>
-                                            <div className="relative">
-                                                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600" size={18} />
-                                                <input
-                                                    type="text"
-                                                    defaultValue={user?.fullName || ''}
-                                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-700 dark:text-white focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600 pointer-events-none"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-2 text-left">
-                                            <label className="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">ইমেইল এড্রেস</label>
-                                            <div className="relative">
-                                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 dark:text-slate-600" size={18} />
-                                                <input
-                                                    type="email"
-                                                    defaultValue={user?.primaryEmailAddress?.emailAddress || ''}
-                                                    className="w-full bg-slate-50 dark:bg-slate-800 border-none rounded-2xl py-4 pl-12 pr-4 font-bold text-slate-700 dark:text-white focus:ring-4 focus:ring-indigo-500/10 transition-all placeholder:text-slate-300 dark:placeholder:text-slate-600 pointer-events-none"
-                                                />
-                                                <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider">Verified</div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-4 pt-4">
-                                        <button className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black shadow-xl shadow-indigo-100 dark:shadow-none hover:scale-[1.02] active:scale-[0.98] transition-all">
-                                            তথ্য আপডেট করুন
-                                        </button>
-                                        <button className="px-8 py-4 rounded-2xl font-bold text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
-                                            বাতিল করুন
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Verification Status Card */}
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] p-8 flex items-center gap-6 shadow-sm">
-                                <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center text-emerald-500 dark:text-emerald-400 shrink-0">
-                                    <ShieldCheck size={28} />
-                                </div>
-                                <div>
-                                    <h4 className="font-black text-slate-900 dark:text-white mb-0.5 tracking-tight uppercase text-xs">Security Status</h4>
-                                    <p className="font-bold text-slate-500 dark:text-slate-400 text-sm">আপনার অ্যাকাউন্ট নিরাপদ আছে</p>
-                                </div>
-                            </div>
-                            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] p-8 flex items-center gap-6 shadow-sm">
-                                <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center text-indigo-500 dark:text-indigo-400 shrink-0">
-                                    <Zap size={28} />
-                                </div>
-                                <div>
-                                    <h4 className="font-black text-slate-900 dark:text-white mb-0.5 tracking-tight uppercase text-xs">Plan Details</h4>
-                                    <p className="font-bold text-slate-500 dark:text-slate-400 text-sm">প্রো মেম্বারশিপ ২০৩১ পর্যন্ত</p>
-                                </div>
-                            </div>
-                        </div>
+                    {/* Tab Content Area */}
+                    <div className="min-h-[600px]">
+                        {renderTabContent()}
                     </div>
                 </div>
             </main>
