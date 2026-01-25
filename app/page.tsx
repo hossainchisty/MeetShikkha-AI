@@ -1,5 +1,6 @@
 'use client';
 
+import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
 import {
   ArrowRight,
   Atom,
@@ -9,15 +10,14 @@ import {
   Copy,
   FlaskConical,
   Languages,
-  Menu,
   Microscope,
   PlayCircle,
   Sparkles,
   ThumbsDown,
   ThumbsUp,
-  X,
   Zap
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -63,7 +63,7 @@ const PRICING = [
     bangla: 'প্রো',
     price: '৳২৯৯',
     period: '/মাস',
-    features: ['আনলিমিটেড প্রশ্ন', 'ধাপে ধাপে বিস্তারিত ব্যাখ্যা', 'ফটো আপলোড (OCR)', '১০০% নয়েজ ফ্রি এক্সপেরিয়েন্স', 'প্রায়োরিটি সাপোর্ট'],
+    features: ['আনলিমিটেড প্রশ্ন', 'ধাপে ধাপে বিস্তারিত ব্যাখ্যা', 'ফটো আপলোড (OCR)', '১০০% نয়েজ ফ্রি এক্সপেরিয়েন্স', 'প্রায়োরিটি সাপোর্ট'],
     button: 'প্রো মেম্বার হন',
     popular: true
   },
@@ -80,7 +80,6 @@ const PRICING = [
 
 export default function LandingPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-indigo-100 selection:text-indigo-600">
@@ -105,77 +104,72 @@ export default function LandingPage() {
               </span>
             </div>
 
-            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8 lg:gap-10">
-              <a href="#subjects" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Subjects</a>
-              <a href="#pricing" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">Pricing</a>
-              <a href="#faq" className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">FAQ</a>
-              <Link
-                href="/chat"
-                className="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100"
-              >
-                লগ ইন / সাইন আপ
-              </Link>
+              <SignedOut>
+                <div className="flex items-center gap-4">
+                  <SignInButton mode="modal">
+                    <button className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors">
+                      লগ ইন
+                    </button>
+                  </SignInButton>
+                  <SignUpButton mode="modal">
+                    <button className="bg-indigo-600 text-white px-6 py-2.5 rounded-full font-bold text-sm hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-100">
+                      সাইন আপ
+                    </button>
+                  </SignUpButton>
+                </div>
+              </SignedOut>
+
+              <SignedIn>
+                <div className="flex items-center gap-5">
+                  <Link
+                    href="/chat"
+                    className="text-sm font-bold text-slate-500 hover:text-indigo-600 transition-colors"
+                  >
+                    Dashboard
+                  </Link>
+                  <UserButton afterSignOutUrl="/" />
+                </div>
+              </SignedIn>
             </div>
 
-            {/* Mobile Menu Button */}
+            {/* Mobile View - Only Auth Buttons */}
             <div className="md:hidden flex items-center gap-3">
-              <Link
-                href="/chat"
-                className="bg-indigo-600 text-white px-4 py-2 rounded-full font-bold text-xs hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100"
-              >
-                লগ ইন
-              </Link>
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-xl bg-slate-50 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 transition-all"
-                aria-label="Toggle menu"
-              >
-                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="bg-indigo-600 text-white px-4 py-2 rounded-full font-bold text-xs hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-100">
+                    লগ ইন
+                  </button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton afterSignOutUrl="/" />
+              </SignedIn>
             </div>
-          </div>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        <div
-          className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out bg-white border-t border-slate-100 ${isMenuOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'
-            }`}
-        >
-          <div className="px-4 py-6 space-y-4">
-            <a
-              href="#subjects"
-              onClick={() => setIsMenuOpen(false)}
-              className="block px-4 py-2 text-base font-bold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-            >
-              Subjects
-            </a>
-            <a
-              href="#pricing"
-              onClick={() => setIsMenuOpen(false)}
-              className="block px-4 py-2 text-base font-bold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-            >
-              Pricing
-            </a>
-            <a
-              href="#faq"
-              onClick={() => setIsMenuOpen(false)}
-              className="block px-4 py-2 text-base font-bold text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
-            >
-              FAQ
-            </a>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section - Image Layout with Soft White Theme */}
+      {/* Hero Section */}
       <section className="relative pt-40 pb-20 px-6 lg:px-20 min-h-[85vh] flex items-center overflow-hidden">
         <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center relative z-10">
-
-          <div className="flex flex-col items-start animate-in fade-in slide-in-from-left-8 duration-1000">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="flex flex-col items-start"
+          >
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.1] mb-6 tracking-tight">
               শিক্ষার ভবিষ্যৎ <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">এবার তোমার হাতে</span>
+              <motion.span
+                initial={{ backgroundPosition: "0% 50%" }}
+                animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+                className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-600 bg-[length:200%_auto]"
+              >
+                এবার তোমার হাতে
+              </motion.span>
             </h1>
 
             <p className="text-lg md:text-xl text-slate-500 font-medium mb-10 max-w-xl leading-relaxed">
@@ -183,12 +177,21 @@ export default function LandingPage() {
             </p>
 
             <div className="flex flex-wrap items-center gap-5 mb-14">
-              <Link
-                href="/ai"
-                className="bg-indigo-600 text-white px-10 py-5 rounded-full font-bold text-lg shadow-[0_20px_40px_-10px_rgba(79,70,229,0.3)] hover:bg-indigo-700 hover:scale-105 transition-all active:scale-95"
-              >
-                ফ্রি'তে ট্রাই করুন
-              </Link>
+              <SignedOut>
+                <SignUpButton mode="modal">
+                  <button className="bg-indigo-600 text-white px-10 py-5 rounded-full font-bold text-lg shadow-[0_20px_40px_-10px_rgba(79,70,229,0.3)] hover:bg-indigo-700 hover:scale-105 transition-all active:scale-95">
+                    ফ্রি'তে শুরু করুন
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <Link
+                  href="/chat"
+                  className="bg-indigo-600 text-white px-10 py-5 rounded-full font-bold text-lg shadow-[0_20px_40px_-10px_rgba(79,70,229,0.3)] hover:bg-indigo-700 hover:scale-105 transition-all active:scale-95"
+                >
+                  ড্যাশবোর্ডে যান
+                </Link>
+              </SignedIn>
               <a
                 href="#pricing"
                 className="bg-white text-slate-700 border border-slate-200 px-10 py-5 rounded-full font-bold text-lg hover:bg-slate-50 transition-all active:scale-95 shadow-sm"
@@ -197,7 +200,7 @@ export default function LandingPage() {
               </a>
             </div>
 
-            {/* Stats Badges from Image Structure */}
+            {/* Stats Badges */}
             <div className="flex flex-wrap gap-3">
               <div className="flex items-center gap-2 bg-indigo-50/50 border border-indigo-100 px-4 py-2.5 rounded-xl">
                 <div className="flex -space-x-2">
@@ -215,11 +218,18 @@ export default function LandingPage() {
                 <span className="text-[13px] font-bold text-slate-600">১০,০০০+ ছবি দিয়ে সমাধান</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* Right Side Chat Preview (Dark Styled for Contrast) */}
-          <div className="relative animate-in fade-in zoom-in-95 duration-1000 delay-200 hidden lg:block">
-            <div className="bg-[#1a1625] border border-white/5 rounded-[40px] p-10 shadow-[0_32px_100px_-20px_rgba(0,0,0,0.3)] relative overflow-hidden">
+          {/* Right Side Chat Preview */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            whileInView={{ opacity: 1, scale: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="relative hidden lg:block lg:-mt-20"
+          >
+            <div className="bg-[#1a1625] border border-white/5 rounded-[40px] p-10 shadow-[0_32px_100px_-20px_rgba(0,0,0,0.3)] relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 blur-3xl rounded-full" />
 
               <div className="flex items-center gap-2 mb-8 border-b border-white/5 pb-4">
@@ -227,7 +237,6 @@ export default function LandingPage() {
               </div>
 
               <div className="space-y-8">
-                {/* User Message */}
                 <div className="flex justify-end">
                   <div className="bg-white/5 border border-white/10 p-5 rounded-3xl rounded-tr-none max-w-[80%]">
                     <p className="text-white font-bold mb-1 font-inter">X^2 - 9 = 0</p>
@@ -235,7 +244,6 @@ export default function LandingPage() {
                   </div>
                 </div>
 
-                {/* AI Response */}
                 <div className="flex gap-4">
                   <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shrink-0 mt-1 shadow-lg shadow-indigo-900/20">
                     <Sparkles size={20} />
@@ -257,10 +265,9 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Decoration elements */}
             <div className="absolute -top-6 -right-6 w-12 h-12 bg-indigo-50 rounded-2xl -z-10 animate-pulse" />
             <div className="absolute -bottom-10 -left-10 w-20 h-20 bg-purple-50 rounded-full -z-10" />
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -273,13 +280,21 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {SUBJECTS_PREVIEW.map((s, i) => (
-              <div key={i} className="p-8 rounded-[32px] bg-white border border-slate-100 hover:border-indigo-200 hover:shadow-xl hover:-translate-y-1 transition-all text-center group cursor-pointer">
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                whileHover={{ y: -8, scale: 1.02 }}
+                className="p-8 rounded-[32px] bg-white border border-slate-100 hover:border-indigo-200 hover:shadow-2xl transition-all text-center group cursor-pointer"
+              >
                 <div className={`w-14 h-14 rounded-2xl ${s.bg} ${s.color} flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform`}>
                   <s.icon className="w-7 h-7" />
                 </div>
                 <h4 className="font-bold text-slate-900 mb-1">{s.bangla}</h4>
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{s.name}</p>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -350,13 +365,23 @@ export default function LandingPage() {
 
           <div className="relative z-10">
             <h2 className="text-5xl md:text-7xl font-black mb-10 leading-tight">সাফল্যের পথে আরও এক ধাপ এগিয়ে যাও আজই।</h2>
-            <Link
-              href="/ai"
-              className="inline-flex items-center gap-4 bg-white text-indigo-600 px-12 py-6 rounded-full font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95"
-            >
-              ফ্রি অ্যাকাউন্ট খোলো
-              <ArrowRight className="w-6 h-6" />
-            </Link>
+            <SignedOut>
+              <SignUpButton mode="modal">
+                <button className="inline-flex items-center gap-4 bg-white text-indigo-600 px-12 py-6 rounded-full font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95">
+                  ফ্রি অ্যাকাউন্ট খোলো
+                  <ArrowRight className="w-6 h-6" />
+                </button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <Link
+                href="/chat"
+                className="inline-flex items-center gap-4 bg-white text-indigo-600 px-12 py-6 rounded-full font-black text-xl shadow-2xl hover:scale-105 transition-all active:scale-95"
+              >
+                আপনার পড়াশোনা চালিয়ে যান
+                <ArrowRight className="w-6 h-6" />
+              </Link>
+            </SignedIn>
           </div>
         </div>
       </section>

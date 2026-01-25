@@ -2,6 +2,7 @@
 
 import { SUBJECTS } from '@/lib/constants';
 import { Message, Subject } from '@/lib/types';
+import { SignedIn, useClerk, UserButton, useUser } from '@clerk/nextjs';
 import DOMPurify from 'dompurify';
 import Link from 'next/link';
 // @ts-ignore
@@ -11,15 +12,18 @@ import {
   Calculator,
   ChevronDown,
   ChevronLeft,
+  CreditCard,
   FlaskConical,
   Image as ImageIcon,
   Languages,
+  LogOut,
   Menu,
   Microscope,
   MoreVertical,
   PlayCircle,
   Plus,
   Send,
+  Settings,
   Sparkles,
   User,
   X
@@ -36,7 +40,10 @@ const IconMap: Record<string, React.FC<any>> = {
 };
 
 export default function Home() {
+  const { user } = useUser();
+  const { signOut } = useClerk();
   const [selectedSubject, setSelectedSubject] = useState<Subject>('Mathematics');
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const [chatInput, setChatInput] = useState('');
   const [allMessages, setAllMessages] = useState<Message[]>([]);
@@ -345,11 +352,38 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="p-4 bg-white">
-          <button className={`w-full flex items-center justify-center gap-2 ${theme.bgLight} ${theme.text} py-3 rounded-xl font-bold hover:brightness-95 transition-all text-sm border ${theme.borderLight}`}>
-            <PlayCircle size={18} />
-            AI ভিডিও টিউটোরিয়াল দেখো
-          </button>
+        <div className="p-4 bg-white mt-auto border-t border-slate-100">
+          <div className="space-y-4">
+            <button className={`w-full flex items-center justify-center gap-2 ${theme.bgLight} ${theme.text} py-3 rounded-xl font-bold hover:brightness-95 transition-all text-sm border ${theme.borderLight}`}>
+              <PlayCircle size={18} />
+              AI ভিডিও টিউটোরিয়াল দেখো
+            </button>
+
+            <SignedIn>
+              <div className="flex items-center gap-3 p-2 rounded-xl hover:bg-slate-50 transition-all cursor-pointer group border border-transparent hover:border-slate-100">
+                <div className="relative">
+                  <UserButton
+                    afterSignOutUrl="/"
+                    appearance={{
+                      elements: {
+                        userButtonAvatarBox: "w-9 h-9 rounded-lg shadow-sm border border-slate-200",
+                        userButtonTrigger: "focus:shadow-none"
+                      }
+                    }}
+                  />
+                  <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm"></div>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-slate-800 truncate">
+                    {user?.firstName} {user?.lastName}
+                  </p>
+                  <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest leading-none mt-0.5">
+                    প্রো মেম্বার
+                  </p>
+                </div>
+              </div>
+            </SignedIn>
+          </div>
         </div>
       </aside>
 
@@ -402,11 +436,86 @@ export default function Home() {
             <button className={`bg-gradient-to-r ${theme.gradient} hover:brightness-110 text-white px-4 md:px-6 py-2 md:py-2.5 rounded-full font-bold text-xs md:text-sm shadow-lg transition-all active:scale-95 whitespace-nowrap`}>
               আপগ্রেড
             </button>
-            <div className="flex items-center gap-2 pl-2 cursor-pointer group">
-              <div className={`w-10 h-10 rounded-full ${theme.primary} flex items-center justify-center text-white shadow-sm ring-2 ring-transparent transition-all duration-500`}>
-                <User size={20} />
-              </div>
-              <ChevronDown size={16} className="text-slate-400 hidden sm:block" />
+            <div className="relative">
+              <SignedIn>
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  onBlur={() => setTimeout(() => setIsProfileOpen(false), 200)}
+                  className="flex items-center gap-3 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-full hover:bg-white hover:shadow-md transition-all active:scale-95 group focus:outline-none"
+                >
+                  <div className="hidden sm:flex flex-col items-end mr-1 translate-y-[-1px]">
+                    <span className="text-[11px] font-black text-slate-900 leading-none mb-0.5">
+                      {user?.firstName} {user?.lastName}
+                    </span>
+                    <span className="text-[9px] font-bold text-indigo-500 uppercase tracking-widest leading-none">
+                      প্রো মেম্বার
+                    </span>
+                  </div>
+                  <div className="relative">
+                    <div className="w-8 h-8 rounded-lg shadow-sm border border-slate-200 overflow-hidden">
+                      {user?.imageUrl ? (
+                        <img
+                          src={user.imageUrl}
+                          alt="Profile"
+                          className="w-full h-full object-cover transition-transform group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                          <User size={16} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-slate-50">
+                      <ChevronDown size={10} className={`text-slate-400 transition-transform duration-300 ${isProfileOpen ? 'rotate-180' : ''}`} />
+                    </div>
+                  </div>
+                </button>
+
+                {isProfileOpen && (
+                  <div className="absolute top-full right-0 mt-3 w-64 bg-white border border-[#F3F4F6] rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] py-4 z-50 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="px-5 pb-4 mb-3 border-b border-slate-50 flex items-center gap-3">
+                      <img src={user?.imageUrl} className="w-10 h-10 rounded-xl object-cover ring-2 ring-indigo-50" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-black text-slate-900 truncate leading-tight">{user?.fullName}</p>
+                        <p className="text-[11px] font-bold text-slate-400 truncate mt-0.5">{user?.primaryEmailAddress?.emailAddress}</p>
+                      </div>
+                    </div>
+
+                    <div className="px-2 space-y-1">
+                      <Link href="/dashboard/profile" className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-2xl transition-all group/item text-left">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center group-hover/item:bg-indigo-100/50 transition-colors">
+                          <User size={16} />
+                        </div>
+                        আমার প্রোফীল
+                      </Link>
+                      <Link href="/dashboard/subscription" className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-2xl transition-all group/item text-left">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center group-hover/item:bg-indigo-100/50 transition-colors">
+                          <CreditCard size={16} />
+                        </div>
+                        সাবস্ক্রিপশন
+                      </Link>
+                      <Link href="/dashboard/settings" className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 rounded-2xl transition-all group/item text-left">
+                        <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center group-hover/item:bg-indigo-100/50 transition-colors">
+                          <Settings size={16} />
+                        </div>
+                        সেটিংস
+                      </Link>
+                    </div>
+
+                    <div className="mt-3 pt-3 border-t border-slate-50 px-2">
+                      <button
+                        onClick={() => signOut()}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-bold text-rose-600 hover:bg-rose-50 rounded-2xl transition-all group/item text-left"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center group-hover/item:bg-rose-100/50 transition-colors">
+                          <LogOut size={16} />
+                        </div>
+                        লগ আউট
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </SignedIn>
             </div>
           </div>
         </header>
@@ -428,7 +537,12 @@ export default function Home() {
                   />
                 </div>
 
-                <h2 className="text-[24px] md:text-[28px] font-black text-[#374151] mb-2 tracking-tight leading-tight text-center">প্রশ্ন করে ইনস্ট্যান্ট উত্তর দেখো</h2>
+                <h2 className="text-[24px] md:text-[28px] font-black text-[#374151] mb-2 tracking-tight leading-tight text-center">
+                  সবিনয় সম্ভাষণ, {user?.firstName || 'শিক্ষার্থী'}!
+                </h2>
+                <h3 className="text-xl md:text-2xl font-bold text-indigo-600 mb-2 tracking-tight leading-tight text-center">
+                  আজ তুমি কী শিখতে চাও?
+                </h3>
                 <p className="text-[#6B7280] max-w-[580px] text-center font-medium leading-relaxed px-4 text-[13px] mb-10">
                   তোমার প্রশ্নটি যত স্পষ্ট ও সুনির্দিষ্ট করে লিখবে অথবা ছবিটি যত স্পষ্ট হবে, MeetShikkha AI তত নির্ভুলভাবে প্রশ্নের উত্তর দিতে পারবে।
                 </p>
