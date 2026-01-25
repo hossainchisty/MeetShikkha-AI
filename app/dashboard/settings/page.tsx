@@ -1,63 +1,75 @@
-import { Bell, ChevronLeft, Eye, Globe, Moon, Shield, Smartphone, Sparkles } from "lucide-react";
+'use client';
+
+import { useLanguage } from "@/lib/LanguageContext";
+import { useTheme } from "@/lib/ThemeContext";
+import { Bell, ChevronLeft, Eye, Globe, Moon, Shield, Sparkles, Sun } from "lucide-react";
 import Link from "next/link";
 
 interface SettingItem {
+    id: string;
     name: string;
-    bangla: string;
     icon: any;
     description: string;
     active?: boolean;
     value?: string;
+    onClick?: () => void;
 }
 
 interface SettingGroup {
     title: string;
-    bangla: string;
     items: SettingItem[];
 }
 
-const SETTINGS_GROUPS: SettingGroup[] = [
-    {
-        title: "Preference",
-        bangla: "পছন্দ",
-        items: [
-            { name: "Dark Mode", bangla: "ডার্ক মোড", icon: Moon, description: "চোখের আরামের জন্য ডার্ক থিম ব্যবহার করুন", active: false },
-            { name: "Language", bangla: "ভাষা পরিবর্তন", icon: Globe, description: "বাংলা বা ইংরেজি ভাষা সেট করুন", value: "Bengali" },
-        ]
-    },
-    {
-        title: "Account & Safety",
-        bangla: "অ্যাকাউন্ট ও নিরাপত্তা",
-        items: [
-            { name: "Notifications", bangla: "নোটিফিকেশন", icon: Bell, description: "নতুন আপডেট এবং খবরের বার্তা পান", active: true },
-            { name: "Privacy", bangla: "প্রাইভেসি", icon: Eye, description: "আপনার ডাটা কার সাথে শেয়ার করবেন তা নিয়ন্ত্রণ করুন" },
-            { name: "Security", bangla: "নিরাপত্তা", icon: Shield, description: "দ্বি-স্তর বিশিষ্ট নিরাপত্তা ব্যবস্থার সেটিংস" },
-        ]
-    },
-    {
-        title: "Usage",
-        bangla: "ব্যবহার",
-        items: [
-            { name: "Devices", bangla: "ডিভাইস লিস্ট", icon: Smartphone, description: "কোন কোন ডিভাইসে লগ ইন করা আছে তা দেখুন" },
-        ]
-    }
-];
-
 export default function SettingsPage() {
+    const { language, setLanguage, t } = useLanguage();
+    const { theme, toggleTheme } = useTheme();
+
+    const SETTINGS_GROUPS: SettingGroup[] = [
+        {
+            title: t.settings.preferences,
+            items: [
+                {
+                    id: 'darkMode',
+                    name: t.settings.darkMode,
+                    icon: theme === 'dark' ? Sun : Moon,
+                    description: theme === 'dark' ? (language === 'bn' ? "চোখের আরামের জন্য লাইট থিম ব্যবহার করুন" : "Use light theme for eye comfort") : (language === 'bn' ? "চোখের আরামের জন্য ডার্ক থিম ব্যবহার করুন" : "Use dark theme for eye comfort"),
+                    active: theme === 'dark',
+                    onClick: toggleTheme
+                },
+                {
+                    id: 'language',
+                    name: t.settings.language,
+                    icon: Globe,
+                    description: language === 'bn' ? "বাংলা বা ইংরেজি ভাষা সেট করুন" : "Set Bangla or English language",
+                    value: language === 'bn' ? 'বাংলা' : 'English',
+                    onClick: () => setLanguage(language === 'bn' ? 'en' : 'bn')
+                },
+            ]
+        },
+        {
+            title: t.settings.security,
+            items: [
+                { id: 'notifications', name: t.settings.notifications, icon: Bell, description: "নতুন আপডেট এবং খবরের বার্তা পান", active: true },
+                { id: 'privacy', name: t.settings.privacy, icon: Eye, description: "আপনার ডাটা কার সাথে শেয়ার করবেন তা নিয়ন্ত্রণ করুন" },
+                { id: 'security', name: t.settings.security, icon: Shield, description: "দ্বি-স্তর বিশিষ্ট নিরাপত্তা ব্যবস্থার সেটিংস" },
+            ]
+        }
+    ];
+
     return (
-        <div className="min-h-screen bg-slate-50/50 pb-20 font-sans">
+        <div className="min-h-screen bg-slate-50/50 dark:bg-[#0f172a] pb-20 font-sans transition-colors duration-500">
             {/* Navigation Header */}
-            <nav className="h-20 bg-white border-b border-slate-100 px-6 mb-8 sticky top-0 z-50">
+            <nav className="h-20 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-6 mb-8 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
                     <div className="flex items-center gap-6">
-                        <Link href="/chat" className="p-2 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-indigo-600 transition-all">
+                        <Link href="/chat" className="p-2 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl text-slate-400 hover:text-indigo-600 transition-all">
                             <ChevronLeft size={24} />
                         </Link>
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white shadow-lg">
                                 <Sparkles size={18} />
                             </div>
-                            <span className="text-xl font-black text-slate-900">সেটিংস</span>
+                            <span className="text-xl font-black text-slate-900 dark:text-white">{t.common.settings}</span>
                         </div>
                     </div>
                 </div>
@@ -67,38 +79,39 @@ export default function SettingsPage() {
                 <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
                     {SETTINGS_GROUPS.map((group, gIdx) => (
                         <div key={gIdx}>
-                            <h3 className="text-[12px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 px-4">{group.bangla}</h3>
-                            <div className="bg-white border border-slate-100 rounded-[32px] overflow-hidden shadow-sm">
+                            <h3 className="text-[12px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-4 px-4">{group.title}</h3>
+                            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-[32px] overflow-hidden shadow-sm">
                                 {group.items.map((item, iIdx) => (
                                     <div
-                                        key={iIdx}
-                                        className={`p-6 flex items-center justify-between hover:bg-slate-50/50 transition-colors cursor-pointer group ${iIdx !== group.items.length - 1 ? 'border-b border-slate-50' : ''}`}
+                                        key={item.id}
+                                        onClick={() => item.onClick?.()}
+                                        className={`p-6 flex items-center justify-between hover:bg-slate-50/50 dark:hover:bg-slate-800/50 transition-colors cursor-pointer group ${iIdx !== group.items.length - 1 ? 'border-b border-slate-50 dark:border-slate-800' : ''}`}
                                     >
                                         <div className="flex items-center gap-5">
-                                            <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-all">
+                                            <div className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-all">
                                                 <item.icon size={22} />
                                             </div>
                                             <div>
-                                                <h4 className="font-bold text-slate-800 text-[15px]">{item.bangla}</h4>
-                                                <p className="text-[12px] font-medium text-slate-400 mt-0.5">{item.description}</p>
+                                                <h4 className="font-bold text-slate-800 dark:text-slate-200 text-[15px]">{item.name}</h4>
+                                                <p className="text-[12px] font-medium text-slate-400 dark:text-slate-500 mt-0.5">{item.description}</p>
                                             </div>
                                         </div>
 
                                         {/* Input UI Elements */}
                                         <div className="flex items-center">
-                                            {item.active !== undefined && (
-                                                <div className={`w-11 h-6 rounded-full transition-all relative ${item.active ? 'bg-indigo-600' : 'bg-slate-200'}`}>
+                                            {item.active !== undefined ? (
+                                                <div className={`w-11 h-6 rounded-full transition-all relative ${item.active ? 'bg-indigo-600' : 'bg-slate-200 dark:bg-slate-700'}`}>
                                                     <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${item.active ? 'left-6' : 'left-1'}`}></div>
                                                 </div>
-                                            )}
+                                            ) : null}
 
-                                            {item.value && (
-                                                <span className="text-sm font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg">{item.value}</span>
-                                            )}
+                                            {item.value ? (
+                                                <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 px-3 py-1 rounded-lg">{item.value}</span>
+                                            ) : null}
 
-                                            {item.active === undefined && !item.value && (
-                                                <ChevronLeft size={16} className="text-slate-300 rotate-180" />
-                                            )}
+                                            {item.active === undefined && !item.value ? (
+                                                <ChevronLeft size={16} className="text-slate-300 dark:text-slate-600 rotate-180" />
+                                            ) : null}
                                         </div>
                                     </div>
                                 ))}

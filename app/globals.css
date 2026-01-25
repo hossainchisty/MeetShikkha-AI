@@ -1,8 +1,14 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   --background: #ffffff;
   --foreground: #111827;
+}
+
+:root[class~="dark"] {
+  --background: #0f172a;
+  --foreground: #f8fafc;
 }
 
 body {
@@ -24,6 +30,10 @@ body {
   border-radius: 10px;
 }
 
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #d1d5db;
 }
@@ -38,13 +48,22 @@ body {
 .prose ul, .prose ol { margin-left: 1.5rem; margin-bottom: 1rem; }
 .prose li { margin-bottom: 0.5rem; }
 .prose strong { font-weight: 700; color: #111827; }
+.dark .prose strong { color: #f1f5f9; }
+
 .prose h1, .prose h2, .prose h3 { font-weight: 800; color: #111827; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+.dark .prose h1, .dark .prose h2, .dark .dark .prose h3 { color: #f1f5f9; }
+
 .prose code { 
   background-color: #f3f4f6; 
   padding: 0.2rem 0.4rem; 
   border-radius: 6px; 
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   font-size: 0.9em;
+}
+
+.dark .prose code {
+  background-color: #1e293b;
+  color: #e2e8f0;
 }
 
 /* KaTeX Specific Adjustments */
