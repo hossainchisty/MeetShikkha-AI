@@ -1,4 +1,4 @@
-# StudyX AI — The Intelligent Academic Assistant
+# MeetShikkha AI — The Intelligent Academic Assistant
 
 [![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat-square&logo=tailwind-css)](https://tailwindcss.com/)
@@ -6,7 +6,7 @@
 [![Supabase](https://img.shields.io/badge/Database-Supabase-3ECF8E?style=flat-square&logo=supabase)](https://supabase.com/)
 [![License](https://img.shields.io/badge/License-Private-red?style=flat-square)](LICENSE)
 
-**StudyX AI** is a high-performance, empathetic AI-driven academic assistant designed to empower students in mastering complex subjects including Mathematics, Physics, Chemistry, Biology, and English. Built with a modern glassmorphism UI, it provides a seamless and engaging learning experience.
+**MeetShikkha AI** is a high-performance, empathetic AI-driven academic assistant designed to empower students in mastering complex subjects including Mathematics, Physics, Chemistry, Biology, and English. Built with a modern glassmorphism UI, it provides a seamless and engaging learning experience.
 
 ---
 
@@ -54,8 +54,8 @@
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/hossainchisty/StudyX-AI.git
-   cd StudyX-AI
+   git clone https://github.com/hossainchisty/MeetShikkha-AI.git
+   cd MeetShikkha-AI
    ```
 
 2. **Install dependencies:**
